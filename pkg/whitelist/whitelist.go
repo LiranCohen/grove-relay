@@ -64,7 +64,7 @@ func New(opts ...Option) *Cache {
 }
 
 func (w *Cache) init() error {
-	stmt := `CREATE TABLE IF NOT EXIST relay_whitelist (
+	stmt := `CREATE TABLE IF NOT EXISTS relay_whitelist (
     pubkey CHAR(64) NOT NULL,
     created TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,

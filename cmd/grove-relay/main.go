@@ -37,7 +37,7 @@ func main() {
 				server.WithDescription(c.String("description")),
 				server.WithPubKey(c.String("pubkey")),
 				server.WithContact(c.String("contact")),
-				server.WithSoftware("software"),
+				server.WithSoftware(c.String("software")),
 				server.WithMaxEventSize(100000),
 				server.WithMaxCache(1000),
 			)

@@ -22,6 +22,7 @@ func main() {
 			&flags.Postgres,
 			&flags.Name,
 			&flags.Description,
+			&flags.Software,
 			&flags.PubKey,
 			&flags.Contact,
 			&flags.MaxEvent,
@@ -36,6 +37,7 @@ func main() {
 				server.WithDescription(c.String("description")),
 				server.WithPubKey(c.String("pubkey")),
 				server.WithContact(c.String("contact")),
+				server.WithSoftware("software"),
 				server.WithMaxEventSize(100000),
 				server.WithMaxCache(1000),
 			)

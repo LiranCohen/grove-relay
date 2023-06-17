@@ -44,7 +44,7 @@ func WithContact(contact string) Option {
 	}
 }
 
-func WithSoftwareURL(software string) Option {
+func WithSoftware(software string) Option {
 	return func(r *Relay) error {
 		r.software = software
 		return nil

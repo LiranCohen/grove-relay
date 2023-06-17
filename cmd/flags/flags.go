@@ -31,6 +31,11 @@ var Description = cli.StringFlag{
 	Usage: "description, shows up o nip11",
 }
 
+var Software = cli.StringFlag{
+	Name:  "software",
+	Usage: "software, shows up o nip11",
+}
+
 var PubKey = cli.StringFlag{
 	Name:  "pubkey",
 	Usage: "owner's public key, shows up on nip11",

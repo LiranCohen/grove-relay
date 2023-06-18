@@ -64,6 +64,9 @@ func New(opts ...Option) *Cache {
 }
 
 func (w *Cache) init() error {
+	w.list = list.New()
+	w.items = make(map[interface{}]*list.Element)
+
 	stmt := `CREATE TABLE IF NOT EXISTS relay_whitelist (
     pubkey CHAR(64) NOT NULL,
     created TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,

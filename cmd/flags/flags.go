@@ -26,6 +26,12 @@ var Name = cli.StringFlag{
 	Required: true,
 }
 
+var ServiceURL = cli.StringFlag{
+	Name:     "url",
+	Usage:    "service URL, used for NIP42 auth",
+	Required: true,
+}
+
 var Description = cli.StringFlag{
 	Name:  "description",
 	Usage: "description, shows up o nip11",

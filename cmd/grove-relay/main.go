@@ -21,6 +21,7 @@ func main() {
 			&flags.Port,
 			&flags.Postgres,
 			&flags.Name,
+			&flags.ServiceURL,
 			&flags.Description,
 			&flags.Software,
 			&flags.PubKey,
@@ -33,6 +34,7 @@ func main() {
 
 			s := server.New(
 				server.WithStorage(storage),
+				server.WithServiceUrl(c.String("url")),
 				server.WithName(c.String("name")),
 				server.WithDescription(c.String("description")),
 				server.WithPubKey(c.String("pubkey")),

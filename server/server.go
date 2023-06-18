@@ -72,6 +72,13 @@ func WithStorage(storage *postgresql.PostgresBackend) Option {
 	}
 }
 
+func WithServiceUrl(url string) Option {
+	return func(r *Relay) error {
+		r.serviceURL = url
+		return nil
+	}
+}
+
 type Relay struct {
 	name          string
 	description   string
@@ -81,6 +88,7 @@ type Relay struct {
 	maxEventSize  int
 	maxCacheSize  int
 	supportedNIPs []int
+	serviceURL    string
 
 	whitelist *whitelist.Cache
 	storage   *postgresql.PostgresBackend
@@ -96,6 +104,10 @@ func New(opts ...Option) *Relay {
 
 	if r.storage == nil {
 		log.Default().Panic(fmt.Errorf("could not load storage - empty interface"))
+	}
+
+	if r.serviceURL == "" {
+		log.Default().Panic(fmt.Errorf("could not start - url required for NIP42"))
 	}
 
 	if r.name == "" {
@@ -134,6 +146,10 @@ func uniqueInts(list1, list2 []int) []int {
 
 func (r *Relay) Name() string {
 	return r.name
+}
+
+func (r *Relay) ServiceURL() string {
+	return r.serviceURL
 }
 
 func (r *Relay) Storage(ctx context.Context) relayer.Storage {

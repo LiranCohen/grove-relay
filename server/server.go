@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/Bitcoin-Grove/grove-relay/pkg/manager"
 	"github.com/Bitcoin-Grove/grove-relay/pkg/whitelist"
 
 	"github.com/fiatjaf/relayer/v2"
@@ -72,6 +73,13 @@ func WithStorage(storage *postgresql.PostgresBackend) Option {
 	}
 }
 
+func WithAdminKeys(pubKeys ...string) Option {
+	return func(r *Relay) error {
+		r.managementKeys = pubKeys
+		return nil
+	}
+}
+
 func WithServiceUrl(url string) Option {
 	return func(r *Relay) error {
 		r.serviceURL = url
@@ -80,16 +88,18 @@ func WithServiceUrl(url string) Option {
 }
 
 type Relay struct {
-	name          string
-	description   string
-	pubKey        string
-	contact       string
-	software      string
-	maxEventSize  int
-	maxCacheSize  int
-	supportedNIPs []int
-	serviceURL    string
+	name           string
+	description    string
+	pubKey         string
+	contact        string
+	software       string
+	maxEventSize   int
+	maxCacheSize   int
+	supportedNIPs  []int
+	serviceURL     string
+	managementKeys []string
 
+	admin     *manager.Admin
 	whitelist *whitelist.Cache
 	storage   *postgresql.PostgresBackend
 }
@@ -157,12 +167,22 @@ func (r *Relay) Storage(ctx context.Context) relayer.Storage {
 }
 
 func (r *Relay) Init() error {
+
 	if r.whitelist == nil {
 		r.whitelist = whitelist.New(
 			whitelist.WithMaxCapacity(1000),
 			whitelist.WithStorage(r.storage),
 		)
 	}
+
+	if r.admin == nil {
+		var err error
+		r.admin, err = manager.New(r.storage, r.managementKeys...)
+		if err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
 
@@ -185,5 +205,11 @@ func (r *Relay) GetNIP11InformationDocument() nip11.RelayInformationDocument {
 		SupportedNIPs: r.supportedNIPs,
 		Software:      r.software,
 		Version:       "~",
+	}
+}
+
+func (r *Relay) HandleUnknownType(ws *relayer.WebSocket, typ string, request []json.RawMessage) {
+	if typ == "ADMIN" && r.admin != nil {
+		r.admin.HandleAdminType(ws, request)
 	}
 }
